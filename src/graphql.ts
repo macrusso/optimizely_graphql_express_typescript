@@ -15,42 +15,38 @@ import {
 
 const schema = buildSchema(`
   type Query {
-    activate(userId: String!): String
-    getVariation(userId: String!): String
-    getForcedVariation(userId: String!): String
-    setForcedVariation(userId: String!, variationKey): String
+    activate(userId: String!, experimentKey: String!): String
+    getVariation(userId: String!, experimentKey: String!): String
+    getForcedVariation(userId: String!, experimentKey: String!): String
+    setForcedVariation(userId: String!, experimentKey: String!, variationKey: String): String
     getEnabledFeatures(userId: String!): [String]
-    isFeatureEnabled(userId: String!, featureKey: String!): [String]
+    isFeatureEnabled(userId: String!, featureKey: String!): Boolean
   }
 
-  type Mutations {
-    setForcedVariation(userId: String!, variationKey): Boolean
+  type Mutation {
+    setForcedVariation(userId: String!, experimentKey: String!, variationKey:String): Boolean
   }
 `);
 
 const root = {
   activate: (args: Args) => {
-    const { userId, experimentKey } = args
-    return activate({ userId, experimentKey })
+    return activate(args)
   },
   getVariation: (args: Args) => {
-    const { userId, experimentKey } = args
-    return getVariation({ userId, experimentKey })
+    return getVariation(args)
   },
   getForcedVariation: (args: Args) => {
-    const { userId, experimentKey } = args
-    return getForcedVariation({ userId, experimentKey })
+    return getForcedVariation(args)
   },
   setForcedVariation: (args: SetForcedVariationArgs) => {
-    const { userId, experimentKey, variationKey = null } = args
-    return setForcedVariation({ userId, experimentKey, variationKey })
+    const { variationKey = null } = args
+    return setForcedVariation({ ...args, variationKey })
   },
   getEnabledFeatures: (args: Args) => {
     return getEnabledFeatures(args.userId)
   },
   isFeatureEnabled: (args: IsFeatureEnabledArgs) => {
-    const { userId, experimentKey, featureKey } = args
-    return isFeatureEnabled({ userId, experimentKey, featureKey })
+    return isFeatureEnabled(args)
   },
 };
 
