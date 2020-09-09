@@ -1,19 +1,48 @@
 import optimizelySDK, { Client } from '@optimizely/optimizely-sdk';
 
+export interface Args {
+  userId: string
+  experimentKey: string
+}
+
+export interface IsFeatureEnabledArgs extends Args {
+  featureKey: string
+}
+
+export interface SetForcedVariationArgs extends Args {
+  variationKey: string | null
+}
+
 export const optimizelyInstance: Client = optimizelySDK.createInstance({
   sdkKey: process.env.SDK_KEY
 });
 
-export const getVariation = (userId: string) => {
-  console.log(userId)
-  const variation = optimizelyInstance.activate('local_test_experiment', userId);
-  console.log(variation);
+export const activate = ({ userId, experimentKey }: Args) => {
+  const variation = optimizelyInstance.activate(experimentKey, userId);
+  return variation
+}
 
-  if (variation === 'variation_1') {
-    return 'variation_1'
-  } else if (variation === 'variation_2') {
-    return 'variation_2'
-  } else {
-    return 'default'
-  }
+export const getVariation = ({ userId, experimentKey }: Args) => {
+  const variation = optimizelyInstance.getVariation(experimentKey, userId);
+  return variation
+}
+
+export const getForcedVariation = ({ userId, experimentKey }: Args) => {
+  const variation = optimizelyInstance.getForcedVariation(experimentKey, userId);
+  return variation
+}
+
+export const setForcedVariation = ({ userId, experimentKey, variationKey }: SetForcedVariationArgs) => {
+  const isForcedVariationSet = optimizelyInstance.setForcedVariation(experimentKey, userId, variationKey)
+  return isForcedVariationSet
+}
+
+export const getEnabledFeatures = (userId: string) => {
+  const features = optimizelyInstance.getEnabledFeatures(userId);
+  return features
+}
+
+export const isFeatureEnabled = ({ userId, featureKey }: IsFeatureEnabledArgs) => {
+  const variation = optimizelyInstance.isFeatureEnabled(featureKey, userId);
+  return variation
 }
