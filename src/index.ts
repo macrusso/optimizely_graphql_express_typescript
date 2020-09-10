@@ -5,20 +5,13 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import { optimizelyInstance, activate, Args } from './optimizely'
 import graphqlHTTP from './graphql'
+import restHTTP from './rest'
 
 const app: Application = express();
 app.use(cors())
 
 app.use('/graphql', graphqlHTTP);
-
-app.use('/rest/', (req: Request, res: Response) => {
-  const { userId, experimentKey } = req.query
-  const data = activate({ userId, experimentKey } as Args)
-
-  return res.status(200).send({
-    data
-  });
-});
+app.use('/rest/', restHTTP);
 
 
 optimizelyInstance.onReady().then(() => console.log('Optimizely SDK is ready'));
