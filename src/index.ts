@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config()
 
-import express, { Application, Request, Response } from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
-import { optimizelyInstance, activate, Args } from './optimizely'
+import { optimizelyInstance } from './optimizely'
 import graphqlHTTP from './graphql'
 import restHTTP from './rest'
 
